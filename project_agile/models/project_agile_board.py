@@ -368,7 +368,7 @@ class ColumnStatus(models.Model):
         "board_id.project_ids.workflow_id")
     def _compute_workflow_ids(self):
         for rec in self:
-            rec.workflow_ids = rec.mapped(
+            rec.workflow_ids = rec.board_id.mapped(
                 "project_ids.workflow_id"
             ).ids
 
