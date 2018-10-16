@@ -1,7 +1,8 @@
 # Copyright 2017 - 2018 Modoolar <info@modoolar.com>
 # License LGPLv3.0 or later (https://www.gnu.org/licenses/lgpl-3.0.en.html).
 
-from odoo import models, fields, api, tools, _
+import odoo.tools as tools
+from odoo import models, fields, api, _
 
 
 class ProjectType(models.Model):
@@ -61,6 +62,12 @@ class ProjectType(models.Model):
                 for project in projects:
                     project.type_ids = [x.id for x in record.stage_ids]
         return result
+
+    @api.model_cr
+    def init(self):
+        tools.convert_file(
+            self._cr, "project_agile", "import/project_type_data.xml", {}
+        )
 
 
 class Project(models.Model):

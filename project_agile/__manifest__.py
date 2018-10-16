@@ -42,11 +42,9 @@
         "views/menu.xml",
 
         "data/project_task_link_relation_data.xml",
-        "data/project_task_priority_data.xml",
         "data/project_task_resolution_data.xml",
         "data/project_task_type_data.xml",
         "data/project_task_type2_data.xml",
-        "data/project_project_data.xml",
     ],
 
     "demo": [],

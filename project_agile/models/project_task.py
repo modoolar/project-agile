@@ -1,6 +1,7 @@
 # Copyright 2017 - 2018 Modoolar <info@modoolar.com>
 # License LGPLv3.0 or later (https://www.gnu.org/licenses/lgpl-3.0.en.html).
 
+import odoo.tools as tools
 from odoo import models, fields, api
 
 
@@ -226,6 +227,12 @@ class TaskType(models.Model):
 
         return task_type_ids
 
+    @api.model_cr
+    def init(self):
+        tools.convert_file(
+            self._cr, "project_agile", "import/project_task_type2_data.xml", {}
+        )
+
 
 class TaskPriority(models.Model):
     _name = 'project.task.priority'
@@ -263,10 +270,25 @@ class TaskPriority(models.Model):
             name=name, args=args, operator=operator, limit=limit
         )
 
+    @api.model_cr
+    def init(self):
+        tools.convert_file(
+            self._cr, "project_agile", "import/project_task_priority_data.xml",
+            {}
+        )
+
 
 class Task(models.Model):
     _name = 'project.task'
     _inherit = ['project.task', 'project.agile.mixin.id_search']
+
+    @api.model
+    def _get_default_type_id(self, ):
+        return self.env.ref_id("project_agile.project_task_type_task")
+
+    @api.model
+    def _get_default_priority_id(self, ):
+        return self.env.ref_id("project_agile.project_task_priority_minor")
 
     def _default_agile_order(self):
         task = self.search([], order="agile_order DESC", limit=1)
@@ -277,12 +299,23 @@ class Task(models.Model):
         string='Type',
         required=True,
         ondelete="restrict",
+        default=lambda s: s._get_default_type_id(),
     )
+
+    priority_id = fields.Many2one(
+        comodel_name='project.task.priority',
+        string='Priority',
+        required=True,
+        ondelete="restrict",
+        default=lambda s: s._get_default_priority_id(),
+    )
+
     agile_order = fields.Float(
         required=False,
         default=_default_agile_order,
         lira=True
     )
+    
     agile_enabled = fields.Boolean(
         related='project_id.agile_enabled',
     )
@@ -291,11 +324,6 @@ class Task(models.Model):
         comodel_name='project.task.resolution',
         string='Resolution',
         index=True,
-    )
-
-    allow_story_points = fields.Boolean(
-        related='type_id.allow_story_points',
-        readonly=True,
     )
 
     project_type_id = fields.Many2one(
@@ -372,13 +400,6 @@ class Task(models.Model):
         related="type_id.allow_sub_tasks",
         string="Allow Sub-Tasks",
         stored=True,
-    )
-
-    priority_id = fields.Many2one(
-        comodel_name='project.task.priority',
-        string='Priority',
-        required=True,
-        ondelete="restrict",
     )
 
     story_points = fields.Integer(
