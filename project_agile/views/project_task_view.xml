@@ -145,6 +145,18 @@
         </field>
     </record>
 
+    <record id="view_task_form2_timesheet_inherit" model="ir.ui.view">
+        <field name="name">project.task.form.timesheet.inherited</field>
+        <field name="model">project.task</field>
+        <field name="priority">100</field>
+        <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='timesheet_ids']/tree/field[@name='unit_amount']" position="after">
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+            </xpath>
+        </field>
+    </record>
+
     <record id="view_task_kanban_inherited" model="ir.ui.view">
         <field name="name">project.task.kanban</field>
         <field name="model">project.task</field>
