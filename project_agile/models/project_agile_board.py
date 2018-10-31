@@ -145,6 +145,10 @@ class Board(models.Model):
             else:
                 record.unmapped_state_ids = []
 
+    @api.onchange("type")
+    def _onchange_type(self):
+        self.is_default = False
+
     @api.constrains('type')
     def _constraint_type_projects(self):
         for project in self.project_ids:

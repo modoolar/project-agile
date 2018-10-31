@@ -23,7 +23,7 @@
                     <group name="main">
                         <group name="left">
                             <field name="type" options="{'horizontal': true}" widget="radio"/>
-                            <field name="is_default" readonly="1"/>
+                            <field name="is_default" readonly="1" force_save="1"/>
                             <field name="description" placeholder="Description..."/>
                         </group>
                         <group name="right">
