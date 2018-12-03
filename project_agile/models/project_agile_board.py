@@ -215,14 +215,6 @@ class Board(models.Model):
 
         self.is_default = True
 
-    @api.multi
-    def export_board(self):
-        self.ensure_one()
-        wizard = self.env['project.agile.board.export.wizard'].create({
-            'board_id': self.id
-        })
-        return wizard.button_export()
-
 
 class Column(models.Model):
     _name = 'project.agile.board.column'
